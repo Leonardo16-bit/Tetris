@@ -19,4 +19,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="immediate2d.h">
+      <Filter>File di origine</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
