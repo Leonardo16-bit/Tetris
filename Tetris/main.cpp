@@ -30,3 +30,19 @@ int FormeTetromino[NUMEROFORME][4][4] = {
     {{1, 1, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // Z
     {{0, 1, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}  // T
 };
+
+// Variabili globali
+int TetrominoOccorrente[4][4];  // La matrice del tetromino attualmente in gioco
+int RigaOccorrente = 0;         // La riga corrente in cui si trova il tetromino (inizialmente 0)
+int ColonnaOccorrente = 3;      // La colonna corrente in cui si trova il tetromino (inizialmente 3, al centro)
+int contatore = 0;              // Il punteggio del gioco, che aumenta con la pulizia delle linee
+int LineeCompletate = 0;        // Il numero di linee che sono state completate
+
+// Funzione per inizializzare il campo di gioco (tutte le celle inizialmente vuote)
+void InizializzaGioco() {
+    for (int r = 0; r < RIGHE; r++) {
+        for (int c = 0; c < COLONNE; c++) {
+            MatriceGioco[r][c] = 0;  // Imposta ogni cella della matrice a 0 (vuota)
+        }
+    }
+}
