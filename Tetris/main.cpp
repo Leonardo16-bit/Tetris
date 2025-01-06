@@ -155,3 +155,35 @@ void DisegnaTetromino() {
         }
     }
 }
+
+
+// Funzione che muove il tetromino nella direzione specificata (S = giù, A = sinistra, D = destra)
+void MuoviTetromino(char Direzione) {
+    int NuovaRiga = RigaOccorrente;
+    int NuovaColonna = ColonnaOccorrente;
+
+    if (Direzione == 'S') {
+        NuovaRiga++; // Muove il tetromino verso il basso
+    }
+    else if (Direzione == 'A') {
+        NuovaColonna--; // Muove il tetromino a sinistra
+    }
+    else if (Direzione == 'D') {
+        NuovaColonna++; // Muove il tetromino a destra
+    }
+
+    // Verifica se il movimento è valido
+    if (ControlloMovimento(NuovaRiga, NuovaColonna)) {
+        RigaOccorrente = NuovaRiga;  // Aggiorna la posizione del tetromino
+        ColonnaOccorrente = NuovaColonna;
+    }
+    else if (Direzione == 'S') {  // Se il movimento verso il basso non è valido (è bloccato)
+        PiazzaTetromino();  // Piazza il tetromino nel campo di gioco
+        PulisciLinee();     // Pulisce le linee completate
+        GeneraTetromino();  // Genera un nuovo tetromino
+    }
+}
+
+
+
+
