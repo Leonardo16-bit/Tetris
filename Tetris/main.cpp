@@ -119,3 +119,39 @@ void PulisciLinee() {
         }
     }
 }
+
+// Funzione che disegna la griglia di gioco, rappresentando ogni cella come un rettangolo
+void DisegnaGriglia() {
+    int offsetX = (IMM2D_WIDTH - (COLONNE * DIMENSIONE_CELLA)) / 2;  // Calcola il margine orizzontale per centrare la griglia
+    int offsetY = (IMM2D_HEIGHT - (RIGHE * DIMENSIONE_CELLA)) / 2;    // Calcola il margine verticale per centrare la griglia
+
+    for (int r = 0; r < RIGHE; r++) {
+        for (int c = 0; c < COLONNE; c++) {
+            int x = offsetX + c * DIMENSIONE_CELLA;  // Calcola la posizione X della cella
+            int y = offsetY + r * DIMENSIONE_CELLA;  // Calcola la posizione Y della cella
+
+            if (MatriceGioco[r][c]) {
+                DrawRectangle(x, y, DIMENSIONE_CELLA, DIMENSIONE_CELLA, Red, true);  // Disegna la cella con colore rosso se occupata
+            }
+            else {
+                DrawRectangle(x, y, DIMENSIONE_CELLA, DIMENSIONE_CELLA, LightGray, false);  // Cella vuota, colore grigio chiaro
+            }
+        }
+    }
+}
+
+// Funzione che disegna il tetromino corrente nella sua posizione sulla griglia
+void DisegnaTetromino() {
+    int offsetX = (IMM2D_WIDTH - (COLONNE * DIMENSIONE_CELLA)) / 2;
+    int offsetY = (IMM2D_HEIGHT - (RIGHE * DIMENSIONE_CELLA)) / 2;
+
+    for (int r = 0; r < 4; r++) {
+        for (int c = 0; c < 4; c++) {
+            if (TetrominoOccorrente[r][c]) {
+                int x = offsetX + (ColonnaOccorrente + c) * DIMENSIONE_CELLA;  // Calcola la posizione X del tetromino
+                int y = offsetY + (RigaOccorrente + r) * DIMENSIONE_CELLA;  // Calcola la posizione Y del tetromino
+                DrawRectangle(x, y, DIMENSIONE_CELLA, DIMENSIONE_CELLA, Blue, true);  // Disegna il blocco del tetromino in blu
+            }
+        }
+    }
+}
