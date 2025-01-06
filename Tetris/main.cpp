@@ -184,6 +184,70 @@ void MuoviTetromino(char Direzione) {
     }
 }
 
+// Funzione che verifica se il gioco è finito
+// Il gioco finisce se la prima riga è già occupata da blocchi
+bool ControllaGameOver() {
+    for (int c = 0; c < COLONNE; c++) {
+        if (MatriceGioco[0][c] != 0) {
+            return true;  // Se una cella nella prima riga è occupata, il gioco è finito
+        }
+    }
+    return false;  // Il gioco non è finito
+}
+
+
+
+void run() {
+    InizializzaGioco();
+    GeneraTetromino();
+    UseDoubleBuffering(true);
+
+    while (true) {
+
+        if (ControllaGameOver()) {
+            // Disegna il messaggio "Game Over"
+            Clear();
+            string gameOverStr = "Game Over!";
+            DrawString((IMM2D_WIDTH / 2) - 5, (IMM2D_HEIGHT / 2) - 55, gameOverStr.c_str(), "Arial", 40, Red, true);
+
+            Present();
+
+            while (true) {
+                int tasto = LastKey();
+                if (tasto == 27) { // Se premi ESC, esce dal gioco
+                    return;
+                }
+            }
+        }
+
+        Clear(); // Pulizia dello schermo
+        DisegnaGriglia();
+        DisegnaTetromino();
+
+        string punteggioStr = "Punteggio: " + to_string(contatore);
+        DrawString(95, 10, punteggioStr.c_str(), "Arial", 20, White, true);
+
+        string lineeStr = "Linee: " + to_string(LineeCompletate);
+        DrawString(67, 40, lineeStr.c_str(), "Arial", 20, White, true);
+
+        Present();
+
+        int tasto = LastKey();
+        if (tasto != 0) {
+            tasto = toupper(tasto); // Converte i tasti in maiuscolo per compatibilità
+        }
+        if (tasto == 27) break; // Esce con il tasto ESC
+        else if (tasto == 'A' || tasto == 'D' || tasto == 'S') {
+            MuoviTetromino(tasto); // Passa direttamente il carattere alla funzione
+        }
+
+        // Movimento automatico verso il basso
+        MuoviTetromino('S');
+        Sleep(600); // Velocità di caduta
+
+    }
+}
+
 
 
 
