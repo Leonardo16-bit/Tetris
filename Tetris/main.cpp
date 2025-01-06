@@ -46,3 +46,20 @@ void InizializzaGioco() {
         }
     }
 }
+
+// Funzione che copia un tetromino (forma) dalla matrice FormeTetromino alla matrice TetrominoOccorrente
+void CopiaTetromino(int tetromino[4][4]) {
+    for (int r = 0; r < 4; r++) {
+        for (int c = 0; c < 4; c++) {
+            TetrominoOccorrente[r][c] = tetromino[r][c];  // Copia ogni valore dalla forma
+        }
+    }
+}
+
+// Funzione per generare un tetromino casuale (selezionando un indice casuale tra 0 e NUMEROFORME-1)
+void GeneraTetromino() {
+    int index = RandomInt(0, NUMEROFORME - 1);  // Genera un numero casuale per scegliere un tetromino
+    CopiaTetromino(FormeTetromino[index]);       // Copia il tetromino selezionato nella matrice corrente
+    RigaOccorrente = 0;                          // Posiziona il tetromino all'inizio del campo (in alto)
+    ColonnaOccorrente = 3;                       // Posiziona il tetromino nel centro del campo (colonna 3)
+}
