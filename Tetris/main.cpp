@@ -63,3 +63,59 @@ void GeneraTetromino() {
     RigaOccorrente = 0;                          // Posiziona il tetromino all'inizio del campo (in alto)
     ColonnaOccorrente = 3;                       // Posiziona il tetromino nel centro del campo (colonna 3)
 }
+
+// Funzione che verifica se il movimento del tetromino è valido
+// Un movimento è valido se il tetromino non esce dal campo o se non collida con altri blocchi
+bool ControlloMovimento(int NuovaRighe, int NuovaColonna) {
+    for (int r = 0; r < 4; r++) {
+        for (int c = 0; c < 4; c++) {
+            if (TetrominoOccorrente[r][c]) {  // Se la cella del tetromino è occupata
+                int RigheGioco = NuovaRighe + r;
+                int ColonneGioco = NuovaColonna + c;
+                // Verifica se il tetromino esce dai limiti o se la cella è già occupata
+                if (RigheGioco < 0 || RigheGioco >= RIGHE || ColonneGioco < 0 || ColonneGioco >= COLONNE || MatriceGioco[RigheGioco][ColonneGioco]) {
+                    return false;  // Il movimento non è valido
+                }
+            }
+        }
+    }
+    return true;  // Il movimento è valido
+}
+
+// Funzione che piazza il tetromino corrente nel campo di gioco (matrice MatriceGioco)
+void PiazzaTetromino() {
+    for (int r = 0; r < 4; r++) {
+        for (int c = 0; c < 4; c++) {
+            if (TetrominoOccorrente[r][c]) {
+                MatriceGioco[RigaOccorrente + r][ColonnaOccorrente + c] = 1;  // Aggiunge il blocco alla matrice
+            }
+        }
+    }
+}
+
+// Funzione che controlla e pulisce le linee complete nel campo di gioco
+// Sposta le righe sopra verso il basso quando una riga è completa
+void PulisciLinee() {
+    for (int r = RIGHE - 1; r >= 0; r--) {  // Scansiona le righe dal basso verso l'alto
+        bool RigaPiena = true;
+        for (int c = 0; c < COLONNE; c++) {
+            if (!MatriceGioco[r][c]) {  // Se c'è una cella vuota nella riga
+                RigaPiena = false;  // La riga non è piena
+                break;  // Interrompe la verifica della riga
+            }
+        }
+        if (RigaPiena) {  // Se la riga è piena
+            for (int rr = r; rr > 0; rr--) {
+                for (int cc = 0; cc < COLONNE; cc++) {
+                    MatriceGioco[rr][cc] = MatriceGioco[rr - 1][cc];  // Sposta le righe sopra verso il basso
+                }
+            }
+            for (int cc = 0; cc < COLONNE; cc++) {
+                MatriceGioco[0][cc] = 0;  // Imposta la prima riga come vuota
+            }
+            LineeCompletate++;  // Aumenta il contatore delle linee completate
+            contatore += 100;   // Aumenta il punteggio di 100 per ogni riga completata
+            r++;  // Riprova sulla stessa riga per gestire eventuali linee multiple completate
+        }
+    }
+}
