@@ -17,6 +17,7 @@
 
 using namespace std;
 
+static constexpr const char sfondomenu[] = "sfondomenu.png";
 // Dichiarazione globale della matrice che rappresenta il campo di gioco
 int MatriceGioco[RIGHE][COLONNE]; // La matrice contiene 0 per le celle vuote e 1 per quelle occupate
 
@@ -38,57 +39,6 @@ int RigaOccorrente = 0;         // La riga corrente in cui si trova il tetromino
 int ColonnaOccorrente = 3;      // La colonna corrente in cui si trova il tetromino (inizialmente 3, al centro)
 int contatore = 0;              // Il punteggio del gioco, che aumenta con la pulizia delle linee
 int LineeCompletate = 0;        // Il numero di linee che sono state completate
-
-void run() {
-    InizializzaGioco();
-    GeneraTetromino();
-    UseDoubleBuffering(true);
-
-    while (true) {
-
-        if (ControllaGameOver()) {
-            // Disegna il messaggio "Game Over"
-            Clear();
-            string gameOverStr = "Game Over!";
-            DrawString((IMM2D_WIDTH / 2) - 5, (IMM2D_HEIGHT / 2) - 55, gameOverStr.c_str(), "Arial", 40, Red, true);
-
-            Present();
-
-            while (true) {
-                int tasto = LastKey();
-                if (tasto == 27) { // Se premi ESC, esce dal gioco
-                    return;
-                }
-            }
-        }
-
-        Clear(); // Pulizia dello schermo
-        DisegnaGriglia();
-        DisegnaTetromino();
-
-        string punteggioStr = "Punteggio: " + to_string(contatore);
-        DrawString(95, 10, punteggioStr.c_str(), "Arial", 20, White, true);
-
-        string lineeStr = "Linee: " + to_string(LineeCompletate);
-        DrawString(67, 40, lineeStr.c_str(), "Arial", 20, White, true);
-
-        Present();
-
-        int tasto = LastKey();
-        if (tasto != 0) {
-            tasto = toupper(tasto); // Converte i tasti in maiuscolo per compatibilità
-        }
-        if (tasto == 27) break; // Esce con il tasto ESC
-        else if (tasto == 'A' || tasto == 'D' || tasto == 'S') {
-            MuoviTetromino(tasto); // Passa direttamente il carattere alla funzione
-        }
-
-        // Movimento automatico verso il basso
-        MuoviTetromino('S');
-        Sleep(110); // Velocità di caduta
-
-    }
-}
 
 // Funzione per inizializzare il campo di gioco (tutte le celle inizialmente vuote)
 void InizializzaGioco() {
@@ -196,13 +146,14 @@ void DisegnaGriglia() {
 void DisegnaTetromino() {
     int offsetX = (IMM2D_WIDTH - (COLONNE * DIMENSIONE_CELLA)) / 2;
     int offsetY = (IMM2D_HEIGHT - (RIGHE * DIMENSIONE_CELLA)) / 2;
-
+    /*Color casuale = generaColoreRandom();*/
     for (int r = 0; r < 4; r++) {
         for (int c = 0; c < 4; c++) {
             if (TetrominoOccorrente[r][c]) {
                 int x = offsetX + (ColonnaOccorrente + c) * DIMENSIONE_CELLA;  // Calcola la posizione X del tetromino
                 int y = offsetY + (RigaOccorrente + r) * DIMENSIONE_CELLA;  // Calcola la posizione Y del tetromino
-                DrawRectangle(x, y, DIMENSIONE_CELLA, DIMENSIONE_CELLA, Blue, true);  // Disegna il blocco del tetromino in blu
+                
+                DrawRectangle(x, y, DIMENSIONE_CELLA, DIMENSIONE_CELLA, Blue , true);  // Disegna il blocco del tetromino in blu
             }
         }
     }
@@ -246,6 +197,85 @@ bool ControllaGameOver() {
     }
     return false;  // Il gioco non è finito
 }
+
+
+void menu(){
+    
+    Clear();
+    const Image imgmenu = LoadImage(sfondomenu);
+    DrawImage(0, 0, imgmenu);
+    DrawString(410, 360, "Premere enter per iniziare a giocare ", "Arial", 20, White, true);
+   
+    while (true)
+    {
+        Present();
+        char Key = LastKey();
+        if (Key==Enter)
+        {
+            break;
+        }
+
+    }
+    
+}
+
+
+
+
+
+void run() {
+    UseDoubleBuffering(true);
+    menu();
+    InizializzaGioco();
+    GeneraTetromino();
+  
+   
+    
+
+
+    while (true) {
+        
+        if (ControllaGameOver()) {
+            // Disegna il messaggio "Game Over"
+            Clear();
+            string gameOverStr = "Game Over!";
+            DrawString((IMM2D_WIDTH / 2) - 5, (IMM2D_HEIGHT / 2) - 55, gameOverStr.c_str(), "Arial", 40, Red, true);
+
+            Present();
+
+            while (true) {
+                int tasto = LastKey();
+                if (tasto == 27) { // Se premi ESC, esce dal gioco
+                    return;
+                }
+            }
+        }
+
+        Clear(); // Pulizia dello schermo
+        DisegnaGriglia();
+        
+        DisegnaTetromino();
+        DrawString(95, 10, "Punteggio: ", "Arial", 20, White, true);
+        DrawString(67, 40, "Linee: ", "Arial", 20, White, true);
+
+        Present();
+
+        int tasto = LastKey();
+        if (tasto != 0) {
+            tasto = toupper(tasto); // Converte i tasti in maiuscolo per compatibilità
+        }
+        if (tasto == 27) break; // Esce con il tasto ESC
+        else if (tasto == 'A' || tasto == 'D' || tasto == 'S') {
+            MuoviTetromino(tasto); // Passa direttamente il carattere alla funzione
+        }
+
+        // Movimento automatico verso il basso
+        MuoviTetromino('S');
+        Sleep(130); // Velocità di caduta
+
+    }
+}
+
 
 
 
