@@ -24,4 +24,9 @@
       <Filter>File di origine</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="tetrismusic.wav">
+      <Filter>File di origine</Filter>
+    </Media>
+  </ItemGroup>
 </Project>

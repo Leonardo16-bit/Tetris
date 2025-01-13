@@ -4,9 +4,11 @@
 #define IMM2D_IMPLEMENTATION     // Implementazione della libreria di Immediate2D per il rendering grafico
 
 #include <cstdlib>
-#include "immediate2d.h"        // Include la libreria per il rendering grafico 2D
-#include <string>
-#include <Windows.h>             // Include la libreria di Windows per l'accesso alle API di sistema
+#include "immediate2d.h"        
+#include <string>             
+#include <Windows.h>
+#include <mmsystem.h>
+#pragma comment (lib, "winmm.lib");
 
 // Costanti del gioco
 #define COLONNE 10               // Numero di colonne nel campo di gioco (10)
@@ -16,6 +18,7 @@
 #define DIMENSIONE_CELLA 40      // La dimensione di ciascuna cella (quadrato) della griglia, in pixel
 
 using namespace std;
+
 
 static constexpr const char sfondomenu[] = "sfondomenu.png";
 // Dichiarazione globale della matrice che rappresenta il campo di gioco
@@ -190,17 +193,21 @@ void MuoviTetromino(char Direzione) {
 // Funzione che verifica se il gioco è finito
 // Il gioco finisce se la prima riga è già occupata da blocchi
 bool ControllaGameOver() {
+    // Verifica se c'è un tetromino nella prima riga (riga 0)
     for (int c = 0; c < COLONNE; c++) {
-        if (MatriceGioco[0][c] != 0) {
-            return true;  // Se una cella nella prima riga è occupata, il gioco è finito
+        if (MatriceGioco[0][c] == 1) {  // Se una cella nella riga 0 è occupata
+            return true;  // Il gioco è finito
         }
     }
-    return false;  // Il gioco non è finito
+    return false;  // Il gioco continua
+}
+void AvviaMusica() {
+    // La musica si avvia in modalità loop
+    PlaySound(TEXT("testrismusic.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 }
 
 
 void menu(){
-    
     Clear();
     const Image imgmenu = LoadImage(sfondomenu);
     DrawImage(0, 0, imgmenu);
@@ -225,31 +232,38 @@ void menu(){
 
 void run() {
     UseDoubleBuffering(true);
+    AvviaMusica();
     menu();
     InizializzaGioco();
     GeneraTetromino();
-  
+    
    
     
 
 
     while (true) {
-        
-        if (ControllaGameOver()) {
-            // Disegna il messaggio "Game Over"
-            Clear();
-            string gameOverStr = "Game Over!";
-            DrawString((IMM2D_WIDTH / 2) - 5, (IMM2D_HEIGHT / 2) - 55, gameOverStr.c_str(), "Arial", 40, Red, true);
+            
+            if (ControllaGameOver()) {
+                // Disegna il messaggio "Game Over"
+                Clear();
+                string gameOverStr = "Game Over!";
+                DrawString((IMM2D_WIDTH / 2) - 5, (IMM2D_HEIGHT / 2) - 55, gameOverStr.c_str(), "Arial", 60, Red, true);
 
-            Present();
+                // Messaggio per tornare al menu
+                string restartMessage = "Premi 'Esc' per tornare al menu";
+                DrawString((IMM2D_WIDTH / 2) - 5, (IMM2D_HEIGHT-200), restartMessage.c_str(), "Arial", 10, White, true);
+                Present();
 
-            while (true) {
-                int tasto = LastKey();
-                if (tasto == 27) { // Se premi ESC, esce dal gioco
-                    return;
+                // Ciclo che attende la pressione del tasto 'Esc' per tornare al menu
+                while (true) {
+                    int tasto = LastKey();
+                    if (tasto == VK_ESCAPE) {  // Se l'utente preme 'Esc', torna al menu
+                        menu();  // Torna al menu
+                        return;  // Esci dalla funzione per ricominciare
+                    }
                 }
             }
-        }
+
 
         Clear(); // Pulizia dello schermo
         DisegnaGriglia();
@@ -264,14 +278,13 @@ void run() {
         if (tasto != 0) {
             tasto = toupper(tasto); // Converte i tasti in maiuscolo per compatibilità
         }
-        if (tasto == 27) break; // Esce con il tasto ESC
-        else if (tasto == 'A' || tasto == 'D' || tasto == 'S') {
+        if (tasto == 'A' || tasto == 'D' || tasto == 'S') {
             MuoviTetromino(tasto); // Passa direttamente il carattere alla funzione
         }
 
         // Movimento automatico verso il basso
         MuoviTetromino('S');
-        Sleep(130); // Velocità di caduta
+        Sleep(110); // Velocità di caduta
 
     }
 }
